@@ -1,0 +1,230 @@
+---
+title: 'FA 1: Examining Data, Transformation, and Regression'
+output: pdf_document
+date: "2026-08-30"
+---
+
+```{r}
+library(tidyverse)
+library(gapminder)
+
+# Select the 2007 observations
+data_2007 <- gapminder %>%
+  filter(year == 2007)
+
+# View the data
+head(data_2007)
+
+```
+
+***3.1. Part A – Initial Examination of the Data***
+
+***A(a)***
+```{r}
+# Number of observations
+nrow(data_2007)
+
+# Number of variables
+ncol(data_2007)
+
+# Structure of the dataset
+str(data_2007)
+
+```
+***A(b)***
+```{r}
+# Summary statistics
+summary(data_2007 %>%
+          select(lifeExp, gdpPercap))
+
+```
+
+***A(c)***
+```{r}
+ggplot(data_2007, aes(x = lifeExp)) +
+  geom_histogram(bins = 20, color = "black") +
+  labs(
+    title = "Distribution of Life Expectancy in 2007",
+    x = "Life Expectancy (years)",
+    y = "Number of Countries"
+  ) +
+  theme_minimal()
+
+ggplot(data_2007, aes(x = gdpPercap)) +
+  geom_histogram(bins = 20, color = "black") +
+  labs(
+    title = "Distribution of GDP per Capita in 2007",
+    x = "GDP per Capita",
+    y = "Number of Countries"
+  ) +
+  theme_minimal()
+
+```
+
+***A(d)***
+```{r}
+ggplot(data_2007, aes(y = lifeExp)) +
+  geom_boxplot() +
+  labs(
+    title = "Boxplot of Life Expectancy in 2007",
+    y = "Life Expectancy (years)"
+  ) +
+  theme_minimal()
+
+ggplot(data_2007, aes(y = gdpPercap)) +
+  geom_boxplot() +
+  labs(
+    title = "Boxplot of GDP per Capita in 2007",
+    y = "GDP per Capita"
+  ) +
+  theme_minimal()
+
+```
+
+
+***3.2. Part B – Examine the Bivariate Relationship***
+
+***B(a)***
+The scatterplot shows a positive relationship between GDP per capita and life expectancy. The relationship appears nonlinear because life expectancy increases quickly at lower GDP levels and gradually levels off at higher GDP levels. The relationship is moderately to strongly associated, with more spread among countries with lower GDP per capita.
+
+***B(b)***
+```{r}
+ggplot(data_2007, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  labs(
+    title = "Life Expectancy vs GDP per Capita in 2007",
+    x = "GDP per Capita",
+    y = "Life Expectancy (years)"
+  ) +
+  theme_minimal()
+```
+
+***B(c)***
+
+```{r}
+ggplot(data_2007, aes(x = gdpPercap, y = lifeExp)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Life Expectancy vs GDP per Capita with LOESS",
+    x = "GDP per Capita",
+    y = "Life Expectancy (years)"
+  ) +
+  theme_minimal()
+```
+
+***B(d)***
+It is important to examine the scatterplot before fitting a regression model because graphs can reveal patterns that numerical summaries may not show. The scatterplot helps us identify nonlinearity, unequal spread, clusters, and unusual observations. This relates to Anscombe’s Quartet, which shows that data can have similar numerical summaries but different graphical patterns.
+
+***3.3. Part C – Transformation of the Explanatory Variable***
+
+***C(a)***
+```{r}
+data_2007 <- data_2007 %>%
+  mutate(log_gdpPercap = log(gdpPercap))
+
+head(data_2007 %>%
+       select(gdpPercap, log_gdpPercap))
+```
+***C(b)***
+```{r}
+ggplot(data_2007, aes(x = gdpPercap)) +
+  geom_histogram(bins = 20, color = "black") +
+  labs(
+    title = "Original GDP per Capita Distribution",
+    x = "GDP per Capita",
+    y = "Number of Countries"
+  ) +
+  theme_minimal()
+
+ggplot(data_2007, aes(x = log_gdpPercap)) +
+  geom_histogram(bins = 20, color = "black") +
+  labs(
+    title = "Log-Transformed GDP per Capita Distribution",
+    x = "Log(GDP per Capita)",
+    y = "Number of Countries"
+  ) +
+  theme_minimal()
+
+```
+
+***C(c)***
+
+```{r}
+ggplot(data_2007, aes(x = log_gdpPercap, y = lifeExp)) +
+  geom_point() +
+  geom_smooth(method = "loess", se = FALSE) +
+  labs(
+    title = "Life Expectancy vs Log(GDP per Capita)",
+    x = "Log(GDP per Capita)",
+    y = "Life Expectancy (years)"
+  ) +
+  theme_minimal()
+```
+
+***C(d)***
+```{r}
+# Original GDP
+gdp_stats <- boxplot.stats(data_2007$gdpPercap)$stats
+
+gdp_lower <- gdp_stats[2]
+gdp_median <- gdp_stats[3]
+gdp_upper <- gdp_stats[4]
+
+gdp_ratio <- (gdp_upper - gdp_median) /
+             (gdp_median - gdp_lower)
+
+gdp_ratio
+
+# Log GDP
+log_stats <- boxplot.stats(data_2007$log_gdpPercap)$stats
+
+log_lower <- log_stats[2]
+log_median <- log_stats[3]
+log_upper <- log_stats[4]
+
+log_ratio <- (log_upper - log_median) /
+             (log_median - log_lower)
+
+log_ratio
+
+```
+
+***3.4. Part D – Compare Regression Descriptions***
+
+***D(a)***
+```{r}
+model1 <- lm(lifeExp ~ gdpPercap, data = data_2007)
+
+summary(model1)
+
+model2 <- lm(lifeExp ~ log_gdpPercap, data = data_2007)
+
+summary(model2)
+
+```
+
+```
+
+***D(b)***
+```{r}
+# Model 1
+summary(model1)$r.squared
+summary(model1)$sigma
+
+# Model 2
+summary(model2)$r.squared
+summary(model2)$sigma
+```
+
+***D(c)***
+```{r}
+plot(model1, which = 1)
+plot(model2, which = 1)
+```
+
+***D(d)***
+Model 2, which uses log(GDP per capita), is considered more appropriate for describing the relationship between life expectancy and GDP per capita. The log-transformed model provides a more suitable description because the relationship becomes more nearly linear and the spread of the residuals is more consistent. In addition, the numerical measures such as R² and residual standard error can be compared to determine whether the transformed model provides a better fit. Therefore, the log transformation improves the suitability of the regression model.
+
+***D(e)***
+One important limitation is that the regression analysis shows an association between GDP per capita and life expectancy, but it does not prove that higher GDP per capita causes higher life expectancy. Other factors, such as healthcare, education, nutrition, and living conditions, may also affect life expectancy.
