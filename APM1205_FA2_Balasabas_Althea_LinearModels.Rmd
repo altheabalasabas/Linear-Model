@@ -1,0 +1,142 @@
+---
+title: "FA 2: Linear Models: Simple Linear Least-Squares Regression"
+output:
+  html_document: default
+  pdf_document: default
+date: "2026-09-15"
+---
+
+***Part 1 – Understanding the Dataset***
+
+***A. Identify the Variable***
+
+The predictor variable (X) is **TV advertising expenditure**, while the response variable (Y) is **Sales**.
+
+***B. Describe the Variables***
+
+TV measures the advertising budget spent on television, expressed in thousands of dollars. Sales measures product sales, expressed in thousands of units. The dataset contains information from 200 markets.
+
+***C. Research Question***
+
+Can product sales be predicted from TV advertising expenditure?
+
+```{r}
+# Load data
+setwd("~/Linear Model files/FA 2")
+advertising <- read.csv("Advertising.csv")
+
+# Inspect data
+head(advertising)
+dim(advertising)
+summary(advertising)
+
+```
+
+***PART 2 – Exploratory Data Analysis***
+
+***A. Scatterplot***
+```{r}
+# Scatterplot
+plot(advertising$TV,
+     advertising$sales,
+     main = "Sales vs. TV Advertising",
+     xlab = "TV Advertising Budget ($000)",
+     ylab = "Sales (000 units)",
+     pch = 19)
+```
+
+***B. Interpretation of the Scatterplot***
+
+The scatterplot shows a positive relationship between TV advertising expenditure and Sales. As TV advertising expenditure increases, Sales generally tend to increase. The relationship appears to be reasonably strong and approximately linear. Therefore, TV advertising expenditure appears to be potentially useful for predicting Sales.
+
+***PART 3 – Simple Linear Regression Model***
+
+***A. Fit the Model in R***
+```{r}
+# Simple linear regression
+model <- lm(sales ~ TV, data = advertising)
+
+# Regression results
+summary(model)
+```
+***B. Report the coefficients***
+```{r}
+# Regression coefficients
+coef(model)
+```
+
+***C. Regression Equation***
+
+The fitted regression equation is:
+
+$$ \widehat{Sales} = 7.0326 + 0.04754(TV) $$
+***D. Interpretation of the Slope***
+
+The slope is approximately 0.04754. Therefore, for every additional $1,000 spent on TV advertising, predicted Sales increase by approximately 0.04754 thousand units, or about 47.54 units, on average.
+
+***PART 4 – Least-Squares and Residual Analysis***
+
+***A. Obtain fitted values and residuals***
+```{r}
+# Fitted values
+advertising$Predicted_Sales <- fitted(model)
+
+# Residuals
+advertising$Residual <- residuals(model)
+```
+***B. Show the first 10 observations ***
+```{r}
+head(advertising[, c("TV", "sales", "Predicted_Sales", "Residual")], 10)
+```
+***C. Interpret One Residual***
+
+For the first observation, the TV advertising expenditure is 230.1 thousand dollars and the actual Sales are 22.1 thousand units. The predicted Sales are approximately 17.97 thousand units, giving a residual of approximately 4.13 thousand units. This positive residual means that the actual Sales were approximately 4.13 thousand units higher than the Sales predicted by the regression model.
+
+***Part 5 – Residual Plot***
+```{r}
+# Residual plot
+plot(model,
+     which = 1,
+     main = "Residuals vs. Fitted Values")
+```
+
+***PART 6 – Residual Standard Error***
+```{r}
+# Residual standard error
+summary(model)$sigma
+```
+
+***PART 7 – Sums of Squares***
+```{r}
+# Sums of squares
+y <- advertising$sales
+yhat <- fitted(model)
+
+TSS <- sum((y - mean(y))^2)
+RSS <- sum((y - yhat)^2)
+RegSS <- TSS - RSS
+
+TSS
+RSS
+RegSS
+
+# Verification
+RegSS + RSS
+```
+***Part 8 – Correlation and r²***
+```{r}
+# Correlation
+r <- cor(advertising$TV,
+         advertising$sales)
+
+r
+# R-squared
+r_squared <- r^2
+
+r_squared
+
+summary(model)$r.squared
+```
+***Part 9 – Overall Conclusion***
+
+The scatterplot shows a positive and approximately linear relationship between TV advertising expenditure and Sales. The fitted regression equation is \(\widehat{Sales} = 7.0326 + 0.04754(TV)\), which indicates that for every additional $1,000 spent on TV advertising, predicted Sales increase by approximately 0.04754 thousand units on average. The residual standard error is approximately 3.259 thousand units, indicating the typical size of the prediction errors. The correlation coefficient is approximately \(r = 0.7822\), showing a strong positive linear association between TV advertising expenditure and Sales. The coefficient of determination is approximately \(r^2 = 0.6119\), meaning that about 61.19% of the variation in Sales can be explained by TV advertising expenditure. Overall, TV advertising expenditure appears to be a useful predictor of Sales, although other factors also contribute to the variation in Sales.
