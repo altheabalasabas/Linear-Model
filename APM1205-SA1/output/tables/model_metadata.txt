@@ -1,0 +1,4 @@
+Season reference category: Autumn
+Multiple model R-squared: 0.375894735060368
+Multiple model adjusted R-squared: 0.375680902740266
+Multiple model overall F-test p-value: 0

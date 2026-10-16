@@ -1,0 +1,15 @@
+"variable","class","missing_count","missing_percent"
+"Date","Date",0,0
+"Rented Bike Count","numeric",0,0
+"Hour","numeric",0,0
+"Temperature","numeric",0,0
+"Humidity","numeric",0,0
+"Wind speed","numeric",0,0
+"Visibility","numeric",0,0
+"Dew point temperature(C)","numeric",0,0
+"Solar Radiation","numeric",0,0
+"Rainfall","numeric",0,0
+"Snowfall","numeric",0,0
+"Seasons","factor",0,0
+"Holiday","factor",0,0
+"Functioning Day","factor",0,0

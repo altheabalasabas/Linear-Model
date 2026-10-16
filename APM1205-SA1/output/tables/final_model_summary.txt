@@ -1,0 +1,28 @@
+
+Call:
+lm(formula = `Rented Bike Count` ~ Temperature + Humidity + `Wind speed` + 
+    Seasons + Temperature:Seasons, data = final_data)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-1408.46  -299.91   -48.17   203.00  2400.60 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                950.8809    31.9411  29.770  < 2e-16 ***
+Temperature                 25.4820     1.5167  16.802  < 2e-16 ***
+Humidity                    -9.3181     0.2964 -31.441  < 2e-16 ***
+`Wind speed`                40.6682     5.5518   7.325  2.6e-13 ***
+SeasonsSpring             -331.5809    33.5865  -9.872  < 2e-16 ***
+SeasonsSummer              563.9930    67.7826   8.321  < 2e-16 ***
+SeasonsWinter             -291.6238    26.9824 -10.808  < 2e-16 ***
+Temperature:SeasonsSpring   19.1411     2.2050   8.681  < 2e-16 ***
+Temperature:SeasonsSummer  -23.2531     2.7753  -8.379  < 2e-16 ***
+Temperature:SeasonsWinter   -6.4389     2.5006  -2.575     0.01 *  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 497.8 on 8750 degrees of freedom
+Multiple R-squared:  0.4049,	Adjusted R-squared:  0.4043 
+F-statistic: 661.6 on 9 and 8750 DF,  p-value: < 2.2e-16
+

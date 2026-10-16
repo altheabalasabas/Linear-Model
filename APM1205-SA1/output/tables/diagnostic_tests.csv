@@ -1,0 +1,4 @@
+"test","statistic","p_value"
+"Breusch-Pagan test (heteroskedasticity)",1050.78294691239,1.92453501497046e-220
+"Durbin-Watson test (serial correlation)",0.333880334160026,0
+"RESET test (functional form)",240.758965600028,1.38517706529399e-53
